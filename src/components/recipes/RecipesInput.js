@@ -2,68 +2,47 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
+import { addRecipe } from '../../actions/recipes'
+import { AddIngredients } from '../ingredients/AddIngredients'
 
-class RecipesInput extends Component {
+export class RecipesInput extends Component {
   constructor(props){
-
     super(props)
     this.state = {name: '', calories: ''}
   }
-  handleOnNameChange(event){
-    // store.dispatch({type: 'UPDATE_FORM_INPUT', formNameInput: event.target.value})
+  handleOnRecipeNameChange(event){
     this.setState({name: event.target.value})
   }
   handleOnCaloriesChange(event){
     this.setState({calories: event.target.value})
-
   }
-  handleSubmit(event){
+  handleOnSubmit(event){
     event.preventDefault()
-    
-    this.props.addRecipe(this.state.name, this.state.calories)
+    let recipe = Object.assign({}, this.state, {ingredientIds: this.props.selectedIngredients})
+    this.props.addRecipe(recipe)
   }
   render(){
-    // debugger;
-    let recipes = this.props.recipes.map((recipe) => {
-      return <li> {recipe.name}</li>
-    })
     return(
-      <div>
-      <form onSubmit={this.handleSubmit.bind(this)}>
-        Create A Recipe
-        <p>
-          <label> Recipe Name </label>
-          <input type="text" onChange={this.handleOnNameChange.bind(this)} value={this.state.name} />
-        </p>
-        <p>
-          <label> Calories </label>
-          <input type="text" onChange={this.handleOnCaloriesChange.bind(this)} value={this.state.calories} />
-        </p>
+      <form onSubmit={this.handleOnSubmit.bind(this)}>
+      <p>
+        <input type="text" onChange={this.handleOnRecipeNameChange.bind(this)} placeholder="Recipe name"/>
+      </p>
+      <p>
+
+      </p>
+        <AddIngredients />
         <input type="submit" />
       </form>
-      <ul>
-        {recipes}
-      </ul>
-      </div>
     )
   }
 }
 
-function addRecipe(name, calories){
-
-  return {type: 'ADD_RECIPE', payload: {name: name, calories: calories} }
-}
-
-
-function mapStateToProps(state){
-  console.log('the state is', state)
-  return {recipes: state.recipes }
-}
+export const ConnectedRecipesInput = connect(mapStateToProps, mapDispatchToProps)(RecipesInput)
 
 function mapDispatchToProps(dispatch){
   return bindActionCreators({addRecipe: addRecipe}, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RecipesInput)
-
-// onSubmit={store.dispatch({type: 'ADD_RECIPE', payload: {name: this.state.name, calories: this.state.calories}})}
+function mapStateToProps(state){
+  return { selectedIngredients: state.recipeForm.ingredientIds }
+}

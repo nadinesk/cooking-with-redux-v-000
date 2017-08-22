@@ -1,55 +1,45 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import { AddIngredient } from './AddIngredient'
+import { bindActionCreators } from 'redux'
+import { ConnectedAddIngredient } from './AddIngredient.js'
+import { unselectedIngredients, findIngredientById } from '../../reducers/ingredients'
 
 export class AddIngredients extends Component {
+  constructor(props){
+    super(props)
+  }
+  handleOnSubmit(event){
+    event.preventDefault()
+  }
   render(){
-    let selectedIngredients = this.props.selectedIngredients.map((selectedIngredient) => {
-      return <li> {selectedIngredient.name}</li>
+    let addIngredients = this.props.unselectedIngredients &&  this.props.unselectedIngredients.map((ingredient) => {
+      return <ConnectedAddIngredient {...ingredient} />
+    })
+    let ingredients = this.props.selectedIngredients && this.props.selectedIngredients.map((ingredient) => {
+      return <li> {ingredient.name} </li>
     })
     return(
-    <div>
-      {selectedIngredients}
-    </div>
+      <div>
+        <div>
+          Ingredients
+          {ingredients}
+        </div>
+        <div>
+          Add More Ingredients
+          {addIngredients}
+        </div>
+      </div>
     )
   }
 }
 
-function findIngredient(ingredientId, ingredients){
-  return ingredients.find((ingredient) => { return ingredient.id === ingredientId })
-}
-
-function selectedIngredients(ingredientIds, ingredients){
-  return ingredientIds.map(function (ingredientId) {
-    return findIngredient(ingredientId, ingredients)
-  })
-}
+export const ConnectedAddIngredients = connect(mapStateToProps)(AddIngredients)
 
 function mapStateToProps(state){
-  return {selectedIngredients: selectedIngredients(state.recipeForm.ingredientIds, state.ingredients), unselectedIngredients: selectedIngredients(allExcept(state.recipeForm.ingredientIds, state.ingredients), state.ingredients)}
+  let selectedIngredients = state.recipeForm.ingredientIds.map(function(ingredientId){
+    return findIngredientById(ingredientId, state.ingredients)
+  })
+  return {ingredients: state.ingredients || [],
+    selectedIngredients: selectedIngredients || [],
+    unselectedIngredients: unselectedIngredients(state.ingredients, state.recipeForm.ingredientIds) || []}
 }
-
-
-function allExcept(ingredientIds, ingredients){
-  return ingredients.filter((ingredient) => {
-    return !ingredientIds.include(ingredient)
-  }).map((ingredient) => { return ingredient.id })
-  // {} -> [1, 2, ]
-}
-
-
-
-
-export const ConnectedAddIngredients =  connect(mapStateToProps)(AddIngredients)
-
-// map
-  // same number of output as input, coerce each element
-// select
-  // smaller array
-// forEach
-  // don't care about the return value, take an action
-// {ingredientIds: [1, 2]}
-
-
-
-// let selectedIngredients =

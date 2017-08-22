@@ -1,24 +1,23 @@
 import uuidV4  from 'uuid/v4';
 
-export default function ingredients(state = [{id: 1, name: 'baba'}, {id: 2, name: 'tomato sauce'}, {id: 3, name: 'peanuts'}], action){
-
+export default function ingredients(state = [], action){
   switch (action.type) {
-    case 'ADD_RECIPE':
-      return state.concat({name: 'foobar'})
-      break;
-    case 'EDIT_RECIPE':
-      
+    case 'CREATE_INGREDIENT':
+      let ingredient = Object.assign({}, action.payload, {id: uuidV4()})
+      return state.concat(ingredient)
     default:
-      return state
+      return state;
   }
 }
 
-function editIngredient(ingredient, payload){
-  // {name: 'baba', calories: 80}
-    // {name: 'babaganoush'}
-  return Object.assign({}, payload, ingredient)
-  // {name: 'babaganoush', calories: 80}
-
+export function unselectedIngredients(ingredients, selectedIngredientIds){
+  return ingredients.filter(function(ingredient){
+      return selectedIngredientIds.includes(ingredient.id)
+  })
 }
 
-// dispatch({type: 'EDIT_RECIPE', payload: {id: 1, name: 'babaganoush'}})
+export function findIngredientById(id, ingredients){
+  return ingredients.find(function(ingredient){
+    return ingredient.id === id
+  })
+}

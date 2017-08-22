@@ -4,10 +4,9 @@ export default function protectedComponent(Component){
   return class AuthComponent extends Component {
     
     render(){
-      return <Component {...props}/>
+  //    return <Component {...props}/>
     }
   }
 }
 
-
-protectedComponent(<Users >)
+//protectedComponent(<Users >)

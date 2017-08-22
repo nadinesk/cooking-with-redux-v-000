@@ -4,13 +4,14 @@ import App from './App'
 import { RecipesInput } from './components/recipes/RecipesInput'
 import { Provider } from 'react-redux'
 import { store } from './store.js'
-import { BrowserRouter as Router, Route, browserHistory } from 'react-router-dom'
+import { Router, Route, browserHistory } from 'react-router'
 
 
 ReactDOM.render(
   <Provider store={store}>
     <Router history={browserHistory}>
-      <App />
+      <Route path="/" component={App} />
+      <Route path="/recipes/new" component={RecipesInput} />
     </Router>
   </Provider>,
   document.getElementById('root'));

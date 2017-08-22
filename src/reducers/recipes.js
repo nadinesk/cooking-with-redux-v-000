@@ -1,17 +1,11 @@
-// state = {recipes: []}
+import uuidV4  from 'uuid/v4';
 
-
-// store.dispatch({type: 'ADD_RECIPE', payload: {name: 'baba', calories: 80}})
-export default function recipes(state = [{name: 'baba'}], action){
+export default function recipe(state = [], action){
   switch (action.type) {
     case 'ADD_RECIPE':
-    
-    // [{name: 'baba', calories: 80}, ]
-      return state.concat(action.payload)
-      break;
+      let ingredient = Object.assign({}, action.payload, {id: uuidV4()})
+      return state.concat(ingredient)
     default:
       return state;
   }
 }
-
-// store = {recipes: [{name: 'baba', calories: 80}], ingredients: []}
